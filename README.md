@@ -1,11 +1,11 @@
 # Boutique Demo
 
-This demo uses the Google GCP Boutique eCommerse Kubernetes application to illustrate the importance of edge, cloud and Internet monitoring of cloud native applications. 
+This demo uses the Google GCP Boutique eCommerse Kubernetes application and ThousandEyes monitoring to illustrate the importance of edge, cloud and Internet monitoring of cloud native applications.
 
 ## Setup
-This demo uses GCP Kubernetes Engine and [Skaffold](https://skaffold.dev/docs/install/) (a CI/CD tool for Kubernetes apps). You'll also need Google CLI (`gcloud`) and Docker (in order to build the demo-app). Follow the setup instructions under [microservices-demo](./microservices-demo/README.md).
+The demo application uses GCP Kubernetes Engine and is deployed with [Skaffold](https://skaffold.dev/docs/install/) (a CI/CD tool for Kubernetes apps). You'll also need Google CLI (`gcloud`) and Docker (in order to build the application). Follow the setup instructions under [microservices-demo](./microservices-demo/README.md) for more setup details.
 
-You'll also need a ThousandEyes account. (You can get a [14-day trial](https://www.thousandeyes.com/signup) if needed). You'll need your ThousandEyes [Account Group token](https://docs.thousandeyes.com/product-documentation/enterprise-agents/where-can-i-get-the-account-group-token).
+You'll also need a ThousandEyes account (you can get a [14-day trial](https://www.thousandeyes.com/signup) if needed) and the ThousandEyes [Account Group token](https://docs.thousandeyes.com/product-documentation/enterprise-agents/where-can-i-get-the-account-group-token) of the account you want to use for the demo.
 
 ## Deploying and Running
 Once setup, you can run `./start.sh` to deploy and run the demo app. This script will ask you to enter your ThousandEyes Account Group token, which will be used to create a credentials file used in the deployment. 
