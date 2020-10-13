@@ -1,0 +1,76 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  artifacts:
+  # image tags are relative; to specify an image repo (e.g. GCR), you
+  # must provide a "default repo" using one of the methods described 
+  # here:
+  # https://skaffold.dev/docs/concepts/#image-repository-handling
+  - image: emailservice
+    context: microservices-demo/src/emailservice
+  - image: productcatalogservice
+    context: microservices-demo/src/productcatalogservice
+  - image: recommendationservice
+    context: microservices-demo/src/recommendationservice
+  - image: shippingservice
+    context: microservices-demo/src/shippingservice
+  - image: checkoutservice
+    context: microservices-demo/src/checkoutservice
+  - image: paymentservice
+    context: microservices-demo/src/paymentservice
+  - image: currencyservice
+    context: microservices-demo/src/currencyservice
+  - image: cartservice
+    context: microservices-demo/src/cartservice
+  - image: frontend
+    context: microservices-demo/src/frontend
+  - image: loadgenerator
+    context: microservices-demo/src/loadgenerator
+  - image: adservice
+    context: microservices-demo/src/adservice
+  tagPolicy:
+    gitCommit: {}
+deploy:
+  kubectl:
+    manifests:
+    - ./microservices-demo/kubernetes-manifests/paymentservice.yaml
+    - ./microservices-demo/kubernetes-manifests/emailservice.yaml
+    - ./microservices-demo/kubernetes-manifests/productcatalogservice.yaml
+    - ./microservices-demo/kubernetes-manifests/recommendationservice.yaml
+    - ./microservices-demo/kubernetes-manifests/shippingservice.yaml
+    - ./microservices-demo/kubernetes-manifests/checkoutservice.yaml
+    - ./microservices-demo/kubernetes-manifests/currencyservice.yaml
+    - ./microservices-demo/kubernetes-manifests/cartservice.yaml
+    - ./microservices-demo/kubernetes-manifests/frontend.yaml
+    - ./microservices-demo/kubernetes-manifests/adservice.yaml
+    - ./thousandeyes/kubernetes/te-credentials.yaml
+    - ./thousandeyes/kubernetes/te-agent-statefulset.yaml
+profiles:
+# "gcb" profile allows building and pushing the images
+# on Google Container Builder without requiring docker
+# installed on the developer machine. However, note that
+# since GCB does not cache the builds, each build will
+# start from scratch and therefore take a long time.
+#
+# This is not used by default. To use it, run:
+#     skaffold run -p gcb
+- name: gcb
+  build:
+    googleCloudBuild:
+      diskSizeGb: 300
+      machineType: N1_HIGHCPU_32
+      timeout: 4000s
