@@ -20,7 +20,7 @@ else
   echo "apiVersion: v1
 kind: Secret 
 metadata: 
-  name: boutique-credentials 
+  name: te-credentials 
 type: Opaque 
 data: 
   TEAGENT_ACCOUNT_TOKEN: ${TEAGENT_ACCOUNT_TOKEN_BASE64}" > ./$credFile

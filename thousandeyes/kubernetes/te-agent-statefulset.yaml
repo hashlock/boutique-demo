@@ -29,7 +29,7 @@ spec:
           - name: TEAGENT_ACCOUNT_TOKEN
             valueFrom:
               secretKeyRef:
-                name: boutique-credentials
+                name: te-credentials
                 key: TEAGENT_ACCOUNT_TOKEN
           - name: TEAGENT_INET
             value: "4"

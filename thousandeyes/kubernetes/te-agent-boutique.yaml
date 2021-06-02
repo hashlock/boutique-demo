@@ -33,7 +33,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: te-credentials
-                key: TE_ACCOUNT_TOKEN
+                key: TEAGENT_ACCOUNT_TOKEN
           - name: TEAGENT_INET
             value: "4"
           - name: KUBERNETES
