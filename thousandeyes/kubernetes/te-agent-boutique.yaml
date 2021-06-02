@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: te-agent-boutique
+  labels:
+    app: te-agent-boutique
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: te-agent-boutique
+  template:
+    metadata:
+      labels:
+        app: te-agent-boutique
+    spec:
+      hostname: te-agent-boutique
+      # Node label must be applied; ex:
+      # kubectl label nodes gke-cluster-1-pool-1-405898a6-u6xp tehost=host2
+      nodeSelector:
+        tehost: host2
+      containers:
+      - name: te-agent-boutique
+        image: thousandeyes/enterprise-agent:latest
+        command: ["/sbin/my_init"]
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+              - SYS_ADMIN
+        env:
+          - name: TEAGENT_ACCOUNT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: te-credentials
+                key: TE_ACCOUNT_TOKEN
+          - name: TEAGENT_INET
+            value: "4"
+          - name: KUBERNETES
+            value: "true"
+          - name: AGENT_NAME
+            # Deployment requires hard coding fixed agent name,
+            # otherwise, name will change on each redeployment.
+            value: te-agent-boutique
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "100m"
+          limits:
+            memory: "2Gi"
+            cpu: "200m"
+        tty: true
+        volumeMounts:
+          - name: vol-agent
+            mountPath: /var/lib/te-agent
+            subPathExpr: $(AGENT_NAME)/te-agent
+          - name: vol-agent
+            mountPath: /var/lib/te-browserbot
+            subPathExpr: $(AGENT_NAME)/te-browserbot
+          - name: vol-agent
+            mountPath: /var/log/agent
+            subPathExpr: $(AGENT_NAME)/log
+      volumes:
+        - name: vol-agent
+          persistentVolumeClaim:
+            claimName: te-agent-boutique-claim
+      terminationGracePeriodSeconds: 10
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: te-agent-boutique-vol
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+  hostPath:
+    path: /var/thousandeyes
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: te-agent-boutique-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: te-agent-boutique-vol
