@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM microsoft/dotnet:2.1-sdk-alpine as builder
+FROM mcr.microsoft.com/dotnet/sdk:3.1-alpine
 WORKDIR /app
 COPY . .
 RUN dotnet restore && \
